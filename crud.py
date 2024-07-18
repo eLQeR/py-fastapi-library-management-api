@@ -7,18 +7,19 @@ import schemas
 from database import get_async_session
 
 
-
 async def get_authors(
+        limit: int,
+        offset: int,
         session: AsyncSession = Depends(get_async_session)
 ):
-    query = select(models.DBAuthor)
+    query = select(models.DBAuthor).offset(offset).limit(limit)
     authors_list = await session.execute(query)
     return [author[0] for author in authors_list.fetchall()]
 
 
 async def create_author(
-    author: schemas.AuthorCreate,
-    session: AsyncSession = Depends(get_async_session)
+        author: schemas.AuthorCreate,
+        session: AsyncSession = Depends(get_async_session)
 ):
     query = insert(models.DBAuthor).values(
         name=author.name,
@@ -31,16 +32,18 @@ async def create_author(
 
 
 async def get_books(
-        session: AsyncSession = Depends(get_async_session)
+        limit: int,
+        offset: int,
+        session: AsyncSession = Depends(get_async_session),
 ):
-    query = select(models.DBBook)
+    query = select(models.DBBook).offset(offset).limit(limit)
     books_list = await session.execute(query)
     return [book[0] for book in books_list.fetchall()]
 
 
 async def create_book(
-    book: schemas.BookCreate,
-    session: AsyncSession = Depends(get_async_session)
+        book: schemas.BookCreate,
+        session: AsyncSession = Depends(get_async_session)
 ):
     query = insert(models.DBBook).values(
         title=book.title,
