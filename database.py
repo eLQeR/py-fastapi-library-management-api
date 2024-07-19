@@ -1,7 +1,7 @@
-from typing import AsyncGenerator, Generator
-from sqlalchemy import MetaData, create_engine
+from typing import AsyncGenerator
+from sqlalchemy import MetaData
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.pool import NullPool
 
@@ -25,21 +25,3 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
     async with async_session() as session:
         yield session
 
-# SQLALCHEMY_DATABASE_URL = "sqlite:///./library.db"
-#
-# Base = declarative_base()
-#
-# metadata = MetaData()
-#
-# engine = create_engine(
-#     SQLALCHEMY_DATABASE_URL,
-# )
-#
-# session_maker = sessionmaker(
-#     engine, expire_on_commit=False, autoflush=False, autocommit=False
-# )
-#
-
-# async def get_session() -> Generator[Session, None]:
-#     async with session_maker() as session:
-#         yield session

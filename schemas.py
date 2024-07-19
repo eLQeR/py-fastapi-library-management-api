@@ -11,10 +11,6 @@ class BookCreate(BaseModel):
 
 class Book(BookCreate):
     id: int
-    title: str
-    summary: str
-    publication_date: datetime
-    author_id: int
 
     class Config:
         from_attributes = True
@@ -27,9 +23,21 @@ class AuthorCreate(BaseModel):
 
 class Author(AuthorCreate):
     id: int
-    name: str
-    bio: str
-    # books: list[Book]
 
     class Config:
         from_attributes = True
+
+
+class AuthorDetail(Author):
+    books: list[Book] | None = None
+
+    class Config:
+        from_attributes = True
+
+
+class BookDetail(BaseModel):
+    id: int
+    title: str
+    summary: str
+    publication_date: datetime
+    author: Author

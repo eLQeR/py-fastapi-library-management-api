@@ -27,9 +27,18 @@ async def root():
 @app.get("/authors/", response_model=List[schemas.Author])
 async def read_authors(
     paginate_params: PaginateDep,
+    name: str | None = None,
     session: AsyncSession = Depends(get_async_session)
 ):
-    return await crud.get_authors(session, **paginate_params)
+    return await crud.get_authors(session=session, name=name, **paginate_params)
+
+
+@app.get("/authors/{id}/", response_model=schemas.Author)
+async def get_author(
+        id: int,
+        session: AsyncSession = Depends(get_async_session)
+):
+    return await crud.retrieve_author(id=id, session=session)
 
 
 @app.post("/authors/", response_model=schemas.Author)
@@ -37,15 +46,30 @@ async def create_author(
         author: schemas.AuthorCreate,
         session: AsyncSession = Depends(get_async_session)
 ):
-    return await crud.create_author(author, session)
+    return await crud.create_author(author=author, session=session)
 
 
 @app.get("/books/", response_model=List[schemas.Book])
 async def read_books(
         paginate_params: PaginateDep,
+        title: str | None = None,
+        author_id: int | None = None,
         session: AsyncSession = Depends(get_async_session)
 ):
-    return await crud.get_books(session, **paginate_params)
+    return await crud.get_books(
+        session=session,
+        author_id=author_id,
+        title=title,
+        **paginate_params
+    )
+
+
+@app.get("/books/{id}/", response_model=schemas.BookDetail)
+async def get_book(
+        id: int,
+        session: AsyncSession = Depends(get_async_session)
+):
+    return await crud.retrieve_book(id=id, session=session)
 
 
 @app.post("/books/", response_model=schemas.Book)
@@ -53,4 +77,4 @@ async def create_book(
         book: schemas.BookCreate,
         session: AsyncSession = Depends(get_async_session)
 ):
-    return await crud.create_book(book, session)
+    return await crud.create_book(book=book, session=session)
