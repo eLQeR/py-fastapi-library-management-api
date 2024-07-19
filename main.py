@@ -1,4 +1,4 @@
-from typing import List, Union, Annotated
+from typing import List, Annotated
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import FastAPI, Depends
@@ -12,7 +12,7 @@ app = FastAPI(swagger_ui_parameters={"tryItOutEnabled": True})
 
 async def paginate_parameters(
         offset: int = 0, limit: int = 100
-):
+) -> dict:
     return {"offset": offset, "limit": limit}
 
 
@@ -29,7 +29,7 @@ async def read_authors(
     paginate_params: PaginateDep,
     name: str | None = None,
     session: AsyncSession = Depends(get_async_session)
-):
+) -> List[schemas.Author]:
     return await crud.get_authors(session=session, name=name, **paginate_params)
 
 
@@ -37,7 +37,7 @@ async def read_authors(
 async def get_author(
         id: int,
         session: AsyncSession = Depends(get_async_session)
-):
+) -> schemas.Author:
     return await crud.retrieve_author(id=id, session=session)
 
 
@@ -45,7 +45,7 @@ async def get_author(
 async def create_author(
         author: schemas.AuthorCreate,
         session: AsyncSession = Depends(get_async_session)
-):
+) -> schemas.Author:
     return await crud.create_author(author=author, session=session)
 
 
@@ -55,7 +55,7 @@ async def read_books(
         title: str | None = None,
         author_id: int | None = None,
         session: AsyncSession = Depends(get_async_session)
-):
+) -> List[schemas.Book]:
     return await crud.get_books(
         session=session,
         author_id=author_id,
@@ -68,7 +68,7 @@ async def read_books(
 async def get_book(
         id: int,
         session: AsyncSession = Depends(get_async_session)
-):
+) -> schemas.Book:
     return await crud.retrieve_book(id=id, session=session)
 
 
@@ -76,5 +76,5 @@ async def get_book(
 async def create_book(
         book: schemas.BookCreate,
         session: AsyncSession = Depends(get_async_session)
-):
+) -> schemas.Book:
     return await crud.create_book(book=book, session=session)
